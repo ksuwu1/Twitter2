@@ -33,6 +33,22 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TwitterMainScreen() {
+    // Lista de Tweets
+    val tweets = listOf(
+        TweetData(
+            authorName = "Mahir",
+            username = "@ScrewderiaF1",
+            content = "JAJAJAJAJAJA.",
+            imageResId = R.drawable.t1 // Reemplaza con la imagen del primer tweet
+        ),
+        TweetData(
+            authorName = "En Júpiter",
+            username = "@En_jupiter",
+            content = "#Yo #meidentifico    ",
+            imageResId = R.drawable.t2 // Reemplaza con la imagen del segundo tweet
+        )
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,25 +79,10 @@ fun TwitterMainScreen() {
             )
         }
 
-        // Botón de Redactar Tweet
-        /*FloatingActionButton(
-            onClick = { /* Handle Click */ },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(8.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.share), // Reemplaza con el ícono de redactar tweet
-                contentDescription = "Compose Tweet",
-                tint = Color.White
-            )*/
-
-
-
         // Feed de Tweets
         LazyColumn {
-            items(10) { index -> // Puedes cambiar el número 10 por la cantidad real de tweets
-                TweetCard()
+            items(tweets) { tweet ->
+                TweetCard(tweet)
             }
         }
 
@@ -135,8 +136,16 @@ fun TwitterMainScreen() {
     }
 }
 
+// Datos del tweet
+data class TweetData(
+    val authorName: String,
+    val username: String,
+    val content: String,
+    val imageResId: Int?
+)
+
 @Composable
-fun TweetCard() {
+fun TweetCard(tweet: TweetData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,26 +166,28 @@ fun TweetCard() {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
-                    Text(text = "Author Name", fontWeight = FontWeight.Bold)
-                    Text(text = "@username", color = Color.Gray)
+                    Text(text = tweet.authorName, fontWeight = FontWeight.Bold)
+                    Text(text = tweet.username, color = Color.Gray)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
 
             // Contenido del Tweet
-            Text(text = "This is the content of the tweet. It can include text, hashtags, mentions, and more.")
+            Text(text = tweet.content)
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Imagen del Tweet
-            Image(
-                painter = painterResource(id = R.drawable.t1), // Reemplaza con imagen adjunta al tweet
-                contentDescription = "Tweet Image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            // Imagen del Tweet (opcional)
+            tweet.imageResId?.let {
+                Image(
+                    painter = painterResource(id = it),
+                    contentDescription = "Tweet Image",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
             // Íconos de interacción (Comentario, Retweet, Me gusta, Compartir)
             Row(
@@ -189,46 +200,45 @@ fun TweetCard() {
                     Icon(
                         painter = painterResource(id = R.drawable.comentario), // Reemplaza con ícono de comentario
                         contentDescription = "Comment",
-                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
+                        modifier = Modifier.size(10.dp) // Tamaño más pequeño
                     )
                 }
                 IconButton(onClick = { /* Handle Retweet */ }) {
                     Icon(
                         painter = painterResource(id = R.drawable.rt), // Reemplaza con ícono de retweet
                         contentDescription = "Retweet",
-                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
+                        modifier = Modifier.size(10.dp) // Tamaño más pequeño
                     )
                 }
                 IconButton(onClick = { /* Handle Like */ }) {
                     Icon(
                         painter = painterResource(id = R.drawable.heart),
                         contentDescription = "Like",
-                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
+                        modifier = Modifier.size(10.dp) // Tamaño más pequeño
                     )
                 }
                 IconButton(onClick = { /* Handle Retweet */ }) {
                     Icon(
                         painter = painterResource(id = R.drawable.stadistics),
                         contentDescription = "Statistic",
-                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
+                        modifier = Modifier.size(10.dp) // Tamaño más pequeño
                     )
                 }
                 IconButton(onClick = { /* Handle Retweet */ }) {
                     Icon(
                         painter = painterResource(id = R.drawable.save),
-                        contentDescription = "save",
-                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
+                        contentDescription = "Save",
+                        modifier = Modifier.size(10.dp) // Tamaño más pequeño
                     )
                 }
                 IconButton(onClick = { /* Handle Share */ }) {
                     Icon(
                         painter = painterResource(id = R.drawable.share),
                         contentDescription = "Share",
-                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
+                        modifier = Modifier.size(10.dp) // Tamaño más pequeño
                     )
                 }
             }
         }
     }
 }
-
