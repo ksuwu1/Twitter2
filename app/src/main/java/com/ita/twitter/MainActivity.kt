@@ -64,7 +64,7 @@ fun TwitterMainScreen() {
         }
 
         // Botón de Redactar Tweet
-        FloatingActionButton(
+        /*FloatingActionButton(
             onClick = { /* Handle Click */ },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -74,8 +74,9 @@ fun TwitterMainScreen() {
                 painter = painterResource(id = R.drawable.share), // Reemplaza con el ícono de redactar tweet
                 contentDescription = "Compose Tweet",
                 tint = Color.White
-            )
-        }
+            )*/
+
+
 
         // Feed de Tweets
         LazyColumn {
@@ -150,7 +151,9 @@ fun TweetCard() {
                 Image(
                     painter = painterResource(id = R.drawable.us1), // Reemplaza con la imagen de perfil del autor
                     contentDescription = "Author",
-                    modifier = Modifier.size(40.dp).clip(CircleShape)
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
@@ -159,42 +162,73 @@ fun TweetCard() {
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
+
+            // Contenido del Tweet
             Text(text = "This is the content of the tweet. It can include text, hashtags, mentions, and more.")
             Spacer(modifier = Modifier.height(8.dp))
+
+            // Imagen del Tweet
             Image(
                 painter = painterResource(id = R.drawable.t1), // Reemplaza con imagen adjunta al tweet
                 contentDescription = "Tweet Image",
-                modifier = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(8.dp))
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(8.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
+
+            // Íconos de interacción (Comentario, Retweet, Me gusta, Compartir)
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = { /* Handle Comment */ }) {
                     Icon(
                         painter = painterResource(id = R.drawable.comentario), // Reemplaza con ícono de comentario
-                        contentDescription = "Comment"
+                        contentDescription = "Comment",
+                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
                     )
                 }
                 IconButton(onClick = { /* Handle Retweet */ }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.retweet), // Reemplaza con ícono de retweet
-                        contentDescription = "Retweet"
+                        painter = painterResource(id = R.drawable.rt), // Reemplaza con ícono de retweet
+                        contentDescription = "Retweet",
+                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
                     )
                 }
                 IconButton(onClick = { /* Handle Like */ }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.heart), // Reemplaza con ícono de me gusta
-                        contentDescription = "Like"
+                        painter = painterResource(id = R.drawable.heart),
+                        contentDescription = "Like",
+                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
+                    )
+                }
+                IconButton(onClick = { /* Handle Retweet */ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.stadistics),
+                        contentDescription = "Statistic",
+                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
+                    )
+                }
+                IconButton(onClick = { /* Handle Retweet */ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.save),
+                        contentDescription = "save",
+                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
                     )
                 }
                 IconButton(onClick = { /* Handle Share */ }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.share), // Reemplaza con ícono de compartir
-                        contentDescription = "Share"
+                        painter = painterResource(id = R.drawable.share),
+                        contentDescription = "Share",
+                        modifier = Modifier.size(24.dp) // Tamaño más pequeño
                     )
                 }
             }
         }
     }
 }
+
