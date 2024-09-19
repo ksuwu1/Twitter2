@@ -410,4 +410,5 @@ fun InteractionIconWithCount(iconResId: Int, count: String, contentDescription: 
             modifier = Modifier.padding(vertical = 2.dp)
         )
     }
+
 }
