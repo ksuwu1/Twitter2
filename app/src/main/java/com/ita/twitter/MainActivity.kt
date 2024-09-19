@@ -18,7 +18,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,16 +36,28 @@ fun TwitterMainScreen() {
     // Lista de Tweets
     val tweets = listOf(
         TweetData(
-            authorName = "Mahir",
-            username = "@ScrewderiaF1",
-            content = "JAJAJAJAJAJA.",
-            imageResId = R.drawable.t1 // Reemplaza con la imagen del primer tweet
+            authorName = "Cerebros",
+            username = "@Cerebros ∙ 6h",
+            content = "De último momento: Senado aprueba que el 1 de octubre, cada seis años, sea día de descanso obligatorio por el cambio de Gobierno Federal.",
+            profileImageResId = R.drawable.user1,
+            imageResId = R.drawable.tw1, // Reemplaza con la imagen del primer tweet
+            commentsCount = "59",
+            retweetsCount = "414",
+            likesCount = "7.9K",
+            statisticsCount = "215K",
+
         ),
         TweetData(
-            authorName = "En Júpiter",
-            username = "@En_jupiter",
-            content = "#Yo #meidentifico    ",
-            imageResId = R.drawable.t2 // Reemplaza con la imagen del segundo tweet
+            authorName = "Xo",
+            username = "@xoytoxica ∙ 1d",
+            content = "El google maps se puso 'alarmante'",
+            profileImageResId = R.drawable.user2,
+            imageResId = R.drawable.tw2, // Reemplaza con la imagen del segundo tweet
+            commentsCount = "5K",
+            retweetsCount = "600",
+            likesCount = "100K",
+            statisticsCount = "1M",
+
         )
     )
 
@@ -67,20 +81,27 @@ fun TwitterMainScreen() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Icono de Perfil con sangría hacia la izquierda
                 Image(
                     painter = painterResource(id = R.drawable.ksuwu), // Reemplaza con tu foto de perfil
                     contentDescription = "Profile",
-                    modifier = Modifier.size(40.dp).clip(CircleShape)
+                    modifier = Modifier
+                        .padding(start = 16.dp) // Agrega sangría hacia la izquierda
+                        .size(30.dp)
+                        .clip(CircleShape)
                 )
                 Image(
                     painter = painterResource(id = R.drawable.logox), // Reemplaza con el logo de Twitter
                     contentDescription = "Twitter Logo",
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(16.dp)
                 )
+                // Icono de Configuración con sangría hacia la derecha
                 Image(
                     painter = painterResource(id = R.drawable.settings), // Reemplaza con el ícono de configuración
                     contentDescription = "Settings",
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier
+                        .padding(end = 14.dp) // Agrega sangría hacia la derecha
+                        .size(30.dp)
                 )
             }
 
@@ -105,7 +126,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 Icon(
                     painter = painterResource(id = R.drawable.home), // Ícono de inicio
                     contentDescription = "Home",
-                    modifier = Modifier.size(15.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             },
             selected = selectedItem == 0,
@@ -116,7 +137,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 Icon(
                     painter = painterResource(id = R.drawable.search), // Ícono de búsqueda
                     contentDescription = "Search",
-                    modifier = Modifier.size(15.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             },
             selected = selectedItem == 1,
@@ -127,7 +148,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 Icon(
                     painter = painterResource(id = R.drawable.slash), // Ícono de marcadores (Grok)
                     contentDescription = "Grok",
-                    modifier = Modifier.size(15.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             },
             selected = selectedItem == 2,
@@ -138,7 +159,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 Icon(
                     painter = painterResource(id = R.drawable.users), // Ícono de tweets de amigos
                     contentDescription = "Friends",
-                    modifier = Modifier.size(15.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             },
             selected = selectedItem == 3,
@@ -149,7 +170,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 Icon(
                     painter = painterResource(id = R.drawable.notification), // Ícono de notificaciones
                     contentDescription = "Notifications",
-                    modifier = Modifier.size(15.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             },
             selected = selectedItem == 4,
@@ -160,7 +181,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 Icon(
                     painter = painterResource(id = R.drawable.mensaje), // Ícono de mensajes
                     contentDescription = "Messages",
-                    modifier = Modifier.size(15.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             },
             selected = selectedItem == 5,
@@ -169,12 +190,18 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
     }
 }
 
-// Datos del tweet
 data class TweetData(
     val authorName: String,
     val username: String,
     val content: String,
-    val imageResId: Int?
+    val profileImageResId: Int,
+    val imageResId: Int? = null,
+    val commentsCount: String = "",
+    val retweetsCount: String = "",
+    val likesCount: String = "",
+    val statisticsCount: String = "",
+    val savesCount: String = "",
+    val sharesCount: String = ""
 )
 
 @Composable
@@ -182,89 +209,129 @@ fun TweetCard(tweet: TweetData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 5.dp),
         elevation = 4.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Encabezado del Tweet
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top // Alineación superior para la imagen y el texto
             ) {
+                // Imagen de perfil
                 Image(
-                    painter = painterResource(id = R.drawable.us1), // Reemplaza con la imagen de perfil del autor
+                    painter = painterResource(id = tweet.profileImageResId), // Imagen de perfil del autor
                     contentDescription = "Author",
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
+
+                // Columna con nombre del autor, nombre de usuario y contenido del tweet
                 Column {
-                    Text(text = tweet.authorName, fontWeight = FontWeight.Bold)
-                    Text(text = tweet.username, color = Color.Gray)
+                    // Nombre del autor y nombre de usuario en la misma línea
+                    Row {
+                        Text(
+                            text = tweet.authorName,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black // Color del autor
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = tweet.username,
+                            color = Color.Gray // Color del nombre de usuario
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(3.dp))
+
+                    // Contenido del Tweet alineado con el nombre y usuario
+                    Text(text = tweet.content)
+
+                    // Imagen del Tweet (opcional)
+                    tweet.imageResId?.let {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Modificar la imagen para que sea cuadrada y más grande
+                        Image(
+                            painter = painterResource(id = it),
+                            contentDescription = "Tweet Image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1f) // Relación de aspecto 1:1 (cuadrada)
+                                .clip(RoundedCornerShape(8.dp)) // Esquinas redondeadas
+                        )
+                    }
                 }
             }
+
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Contenido del Tweet
-            Text(text = tweet.content)
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Imagen del Tweet (opcional)
-            tweet.imageResId?.let {
-                Image(
-                    painter = painterResource(id = it),
-                    contentDescription = "Tweet Image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            // Íconos de interacción (Comentario, Retweet, Me gusta, Compartir)
+            // Íconos de interacción con conteo
             Row(
                 modifier = Modifier
+
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { /* Handle Comment */ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.comentario), // Reemplaza con ícono de comentario
-                        contentDescription = "Comment",
-                        modifier = Modifier.size(10.dp)
-                    )
-                }
-                IconButton(onClick = { /* Handle Retweet */ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.rt), // Reemplaza con ícono de retweet
-                        contentDescription = "Retweet",
-                        modifier = Modifier.size(10.dp)
-                    )
-                }
-                IconButton(onClick = { /* Handle Like */ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.heart),
-                        contentDescription = "Like",
-                        modifier = Modifier.size(10.dp)
-                    )
-                }
-                IconButton(onClick = { /* Handle Like */ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.save),
-                        contentDescription = "Save",
-                        modifier = Modifier.size(10.dp)
-                    )
-                }
-                IconButton(onClick = { /* Handle Share */ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.share),
-                        contentDescription = "Share",
-                        modifier = Modifier.size(10.dp)
-                    )
-                }
+                InteractionIconWithCount(
+
+                    iconResId = R.drawable.comentario,
+                    count = tweet.commentsCount,
+                    contentDescription = "Comment"
+
+                )
+                InteractionIconWithCount(
+                    iconResId = R.drawable.rt,
+                    count = tweet.retweetsCount,
+                    contentDescription = "Retweet"
+                )
+                InteractionIconWithCount(
+                    iconResId = R.drawable.heart,
+                    count = tweet.likesCount,
+                    contentDescription = "Like"
+                )
+                InteractionIconWithCount(
+                    iconResId = R.drawable.stadistics,
+                    count = tweet.statisticsCount,
+                    contentDescription = "Statistics"
+                )
+                InteractionIconWithCount(
+                    iconResId = R.drawable.save,
+                    count = tweet.savesCount,
+                    contentDescription = "Save"
+                )
+                InteractionIconWithCount(
+                    iconResId = R.drawable.share,
+                    count = tweet.sharesCount,
+                    contentDescription = "Share"
+                )
             }
         }
+    }
+}
+
+@Composable
+fun InteractionIconWithCount(iconResId: Int, count: String, contentDescription: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically, // Alineación vertical al centro
+                horizontalArrangement = Arrangement.Center
+    ) {
+        IconButton(onClick = { /* Handle Click */ }) {
+            Icon(
+                painter = painterResource(id = iconResId),
+                contentDescription = contentDescription,
+                modifier = Modifier.size(12.dp) // Tamaño más pequeño para los íconos
+            )
+        }
+        Spacer(modifier = Modifier.width(2.dp))
+        Text(
+            text = count,
+            color = Color.Gray,
+            fontWeight = FontWeight.Normal,
+            textAlign = TextAlign.Right,
+            modifier = Modifier.padding(vertical = 2.dp)
+        )
     }
 }
