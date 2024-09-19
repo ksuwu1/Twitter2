@@ -4,9 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,10 +21,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +36,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             TwitterMainScreen()
         }
+
+        // Configurar el color de la barra de estado y la barra de navegación
+        WindowCompat.getInsetsController(window, window.decorView).let { controller ->
+            controller.isAppearanceLightStatusBars = true
+            controller.isAppearanceLightNavigationBars = true
+        }
+
+        window.statusBarColor = ContextCompat.getColor(this, R.color.white) // Cambia R.color.white por el color deseado
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.white) // Cambia R.color.white por el color deseado
     }
 }
+
 
 @Composable
 fun TwitterMainScreen() {
@@ -40,32 +58,39 @@ fun TwitterMainScreen() {
             username = "@Cerebros ∙ 6h",
             content = "De último momento: Senado aprueba que el 1 de octubre, cada seis años, sea día de descanso obligatorio por el cambio de Gobierno Federal.",
             profileImageResId = R.drawable.user1,
-            imageResId = R.drawable.tw1, // Reemplaza con la imagen del primer tweet
+            imageResId = R.drawable.tw1,
             commentsCount = "59",
             retweetsCount = "414",
             likesCount = "7.9K",
             statisticsCount = "215K",
-
         ),
         TweetData(
             authorName = "Xo",
             username = "@xoytoxica ∙ 1d",
             content = "El google maps se puso 'alarmante'",
             profileImageResId = R.drawable.user2,
-            imageResId = R.drawable.tw2, // Reemplaza con la imagen del segundo tweet
+            imageResId = R.drawable.tw2,
             commentsCount = "5K",
             retweetsCount = "600",
             likesCount = "100K",
             statisticsCount = "1M",
-
         )
     )
 
-    var selectedItem by remember { mutableStateOf(0) } // Para manejar la selección de la barra de navegación
+    var selectedItem by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
         bottomBar = {
             BottomNavigationBar(selectedItem = selectedItem, onItemSelected = { selectedItem = it })
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { /* Manejar redacción de nuevo tweet */ },
+                backgroundColor = Color(0xFF1DA1F2)
+            ) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "New Tweet")
+            }
         }
     ) { innerPadding ->
         Column(
@@ -77,34 +102,55 @@ fun TwitterMainScreen() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
+                    .height(50.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Icono de Perfil con sangría hacia la izquierda
                 Image(
-                    painter = painterResource(id = R.drawable.ksuwu), // Reemplaza con tu foto de perfil
+                    painter = painterResource(id = R.drawable.ksuwu),
                     contentDescription = "Profile",
                     modifier = Modifier
-                        .padding(start = 16.dp) // Agrega sangría hacia la izquierda
+                        .padding(start = 16.dp)
                         .size(30.dp)
                         .clip(CircleShape)
                 )
                 Image(
-                    painter = painterResource(id = R.drawable.logox), // Reemplaza con el logo de Twitter
+                    painter = painterResource(id = R.drawable.logox),
                     contentDescription = "Twitter Logo",
                     modifier = Modifier.size(16.dp)
                 )
                 // Icono de Configuración con sangría hacia la derecha
                 Image(
-                    painter = painterResource(id = R.drawable.settings), // Reemplaza con el ícono de configuración
+                    painter = painterResource(id = R.drawable.settings),
                     contentDescription = "Settings",
                     modifier = Modifier
-                        .padding(end = 14.dp) // Agrega sangría hacia la derecha
+                        .padding(end = 14.dp)
                         .size(30.dp)
                 )
             }
-
+            Spacer(modifier = Modifier.height(8.dp))
+            // Barra de pestañas "Para ti" y "Siguiendo"
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 95.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TabButton(
+                    text = "Para ti",
+                    isSelected = selectedTab == 0,
+                    onClick = { selectedTab = 0 }
+                )
+                TabButton(
+                    text = "Siguiendo",
+                    isSelected = selectedTab == 1,
+                    onClick = { selectedTab = 1 }
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
             // Feed de Tweets
             LazyColumn {
                 items(tweets) { tweet ->
@@ -124,7 +170,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
         BottomNavigationItem(
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.home), // Ícono de inicio
+                    painter = painterResource(id = R.drawable.home),
                     contentDescription = "Home",
                     modifier = Modifier.size(20.dp)
                 )
@@ -135,7 +181,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
         BottomNavigationItem(
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.search), // Ícono de búsqueda
+                    painter = painterResource(id = R.drawable.search),
                     contentDescription = "Search",
                     modifier = Modifier.size(20.dp)
                 )
@@ -146,7 +192,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
         BottomNavigationItem(
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.slash), // Ícono de marcadores (Grok)
+                    painter = painterResource(id = R.drawable.slash),
                     contentDescription = "Grok",
                     modifier = Modifier.size(20.dp)
                 )
@@ -157,7 +203,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
         BottomNavigationItem(
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.users), // Ícono de tweets de amigos
+                    painter = painterResource(id = R.drawable.users),
                     contentDescription = "Friends",
                     modifier = Modifier.size(20.dp)
                 )
@@ -168,7 +214,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
         BottomNavigationItem(
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.notification), // Ícono de notificaciones
+                    painter = painterResource(id = R.drawable.notification),
                     contentDescription = "Notifications",
                     modifier = Modifier.size(20.dp)
                 )
@@ -179,7 +225,7 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
         BottomNavigationItem(
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.mensaje), // Ícono de mensajes
+                    painter = painterResource(id = R.drawable.mensaje),
                     contentDescription = "Messages",
                     modifier = Modifier.size(20.dp)
                 )
@@ -187,6 +233,39 @@ fun BottomNavigationBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
             selected = selectedItem == 5,
             onClick = { onItemSelected(5) }
         )
+    }
+}
+
+@Composable
+fun TabButton(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    textSize: TextUnit = 16.sp,
+    textColor: Color = Color.Gray,
+    indicatorColor: Color = Color(0xFF1DA1F2),
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = text,
+            fontWeight = FontWeight.Bold,
+            fontSize = textSize,
+            color = if (isSelected) indicatorColor else textColor,
+            modifier = Modifier.clickable(onClick = onClick)
+        )
+        if (isSelected) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Box(
+                modifier = Modifier
+                    .height(2.dp)
+                    .width(100.dp)
+                    .background(indicatorColor)
+            )
+        }
     }
 }
 
@@ -209,23 +288,23 @@ fun TweetCard(tweet: TweetData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 5.dp),
-        elevation = 4.dp
+            .padding(vertical = 1.dp),
+        elevation = 1.dp
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(7.dp)) {
             // Encabezado del Tweet
             Row(
-                verticalAlignment = Alignment.Top // Alineación superior para la imagen y el texto
+                verticalAlignment = Alignment.Top
             ) {
                 // Imagen de perfil
                 Image(
-                    painter = painterResource(id = tweet.profileImageResId), // Imagen de perfil del autor
+                    painter = painterResource(id = tweet.profileImageResId),
                     contentDescription = "Author",
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(5.dp))
 
                 // Columna con nombre del autor, nombre de usuario y contenido del tweet
                 Column {
@@ -234,12 +313,12 @@ fun TweetCard(tweet: TweetData) {
                         Text(
                             text = tweet.authorName,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black // Color del autor
+                            color = Color.Black
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = tweet.username,
-                            color = Color.Gray // Color del nombre de usuario
+                            color = Color.Gray
                         )
                     }
 
@@ -258,8 +337,8 @@ fun TweetCard(tweet: TweetData) {
                             contentDescription = "Tweet Image",
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .aspectRatio(1f) // Relación de aspecto 1:1 (cuadrada)
-                                .clip(RoundedCornerShape(8.dp)) // Esquinas redondeadas
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(8.dp))
                         )
                     }
                 }
@@ -270,17 +349,14 @@ fun TweetCard(tweet: TweetData) {
             // Íconos de interacción con conteo
             Row(
                 modifier = Modifier
-
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 InteractionIconWithCount(
-
                     iconResId = R.drawable.comentario,
                     count = tweet.commentsCount,
                     contentDescription = "Comment"
-
                 )
                 InteractionIconWithCount(
                     iconResId = R.drawable.rt,
@@ -315,14 +391,14 @@ fun TweetCard(tweet: TweetData) {
 @Composable
 fun InteractionIconWithCount(iconResId: Int, count: String, contentDescription: String) {
     Row(
-        verticalAlignment = Alignment.CenterVertically, // Alineación vertical al centro
-                horizontalArrangement = Arrangement.Center
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         IconButton(onClick = { /* Handle Click */ }) {
             Icon(
                 painter = painterResource(id = iconResId),
                 contentDescription = contentDescription,
-                modifier = Modifier.size(12.dp) // Tamaño más pequeño para los íconos
+                modifier = Modifier.size(12.dp)
             )
         }
         Spacer(modifier = Modifier.width(2.dp))
